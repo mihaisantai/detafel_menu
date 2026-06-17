@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De Tafel Bar · Drinks Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Josefin+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #f9f6f0;
+    color: #1a1a1a;
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 56px 48px 200px;
+    min-height: 100vh;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+    border-bottom: 0.5px solid rgba(26,26,26,0.12);
+    padding-bottom: 36px;
+  }
+
+  .header .venue {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: rgba(26,26,26,0.45);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 54px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #1a1a1a;
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+
+  .header .tagline {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: rgba(26,26,26,0.5);
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+
+  .header .accent-line {
+    width: 48px;
+    height: 1px;
+    background: #b8860b;
+    margin: 18px auto 0;
+  }
+
+  /* View toggle */
+  .view-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .view-tab {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 9px 20px;
+    border: 0.5px solid rgba(26,26,26,0.2);
+    background: transparent;
+    color: rgba(26,26,26,0.5);
+    cursor: pointer;
+    border-radius: 999px;
+    transition: all 0.18s ease;
+  }
+
+  .view-tab:hover { color: #1a1a1a; border-color: rgba(26,26,26,0.4); }
+
+  .view-tab.active {
+    background: #1a1a1a;
+    color: #f9f6f0;
+    border-color: #1a1a1a;
+  }
+
+  .view-tab .tab-count {
+    font-weight: 300;
+    opacity: 0.6;
+    margin-left: 6px;
+  }
+
+  .category-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #b8860b;
+    font-weight: 700;
+    margin-bottom: 16px;
+    margin-top: 36px;
+  }
+
+  .drink-card {
+    border-top: 0.5px solid rgba(26,26,26,0.12);
+    padding: 20px 0 18px;
+  }
+
+  .drink-card:last-of-type { border-bottom: 0.5px solid rgba(26,26,26,0.12); }
+
+  .drink-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5px;
+    gap: 16px;
+  }
+
+  .drink-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.02em;
+  }
+
+  .drink-base-price {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a1a;
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+  }
+
+  .drink-desc {
+    font-size: 12.5px;
+    color: rgba(26,26,26,0.5);
+    letter-spacing: 0.06em;
+    font-weight: 300;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+
+  .addons-label {
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(26,26,26,0.35);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .addons-list { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .addon-pill {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 5px 14px;
+    border: 0.5px solid rgba(184,134,11,0.5);
+    color: #b8860b;
+    border-radius: 999px;
+    text-transform: uppercase;
+    background: rgba(184,134,11,0.06);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+
+  .addon-pill:hover { background: rgba(184,134,11,0.16); }
+
+  .addon-pill.na {
+    border-color: rgba(26,26,26,0.2);
+    color: rgba(26,26,26,0.7);
+    background: rgba(26,26,26,0.04);
+  }
+
+  .addon-pill.na:hover { background: rgba(26,26,26,0.1); }
+
+  .addon-pill.selected { background: #b8860b; color: #f9f6f0; border-color: #b8860b; }
+  .addon-pill.na.selected { background: #1a1a1a; color: #f9f6f0; border-color: #1a1a1a; }
+  .addon-pill.selected .addon-price { color: rgba(249,246,240,0.75); }
+
+  .addon-price { font-weight: 300; color: rgba(184,134,11,0.7); margin-left: 6px; }
+  .addon-pill.na .addon-price { color: rgba(26,26,26,0.35); }
+
+  .addons-row { margin-bottom: 10px; }
+  .addons-row:last-child { margin-bottom: 0; }
+
+  /* Per-card add-to-order control */
+  .card-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 0.5px dashed rgba(26,26,26,0.14);
+  }
+
+  .config-summary { font-size: 11px; letter-spacing: 0.06em; color: rgba(26,26,26,0.55); font-weight: 300; }
+  .config-summary strong { font-weight: 700; color: #1a1a1a; }
+
+  .qty-control { display: flex; align-items: center; gap: 10px; }
+
+  .qty-btn {
+    width: 26px; height: 26px;
+    border: 0.5px solid rgba(26,26,26,0.3);
+    background: transparent; color: #1a1a1a;
+    border-radius: 50%; font-size: 15px; line-height: 1; cursor: pointer;
+    font-family: 'Josefin Sans', sans-serif; transition: all 0.15s ease;
+  }
+  .qty-btn:hover { background: #1a1a1a; color: #f9f6f0; }
+
+  .qty-num { font-size: 13px; font-weight: 700; min-width: 16px; text-align: center; }
+
+  .add-btn {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700;
+    padding: 9px 18px; border: 0.5px solid #1a1a1a; background: transparent; color: #1a1a1a;
+    cursor: pointer; transition: all 0.15s ease; white-space: nowrap;
+  }
+  .add-btn:hover { background: #1a1a1a; color: #f9f6f0; }
+
+  /* Order bar */
+  .order-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #1a1a1a; color: #f9f6f0; z-index: 50;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
+  }
+  .order-bar-inner { max-width: 780px; margin: 0 auto; padding: 16px 48px; }
+  .order-bar-top { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+  .order-bar-meta { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(249,246,240,0.55); font-weight: 300; }
+  .order-bar-total { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; letter-spacing: 0.02em; }
+  .order-bar-actions { display: flex; gap: 10px; }
+
+  .ghost-btn {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700;
+    padding: 11px 16px; border: 0.5px solid rgba(249,246,240,0.4);
+    background: transparent; color: rgba(249,246,240,0.8); cursor: pointer; transition: all 0.15s ease;
+  }
+  .ghost-btn:hover { border-color: #f9f6f0; color: #f9f6f0; }
+
+  .finalize-btn {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700;
+    padding: 11px 24px; border: 0.5px solid #b8860b; background: #b8860b; color: #1a1a1a;
+    cursor: pointer; transition: all 0.15s ease;
+  }
+  .finalize-btn:hover { background: #ca9a1f; border-color: #ca9a1f; }
+  .finalize-btn:disabled, .ghost-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .cart-lines {
+    margin-top: 14px; border-top: 0.5px solid rgba(249,246,240,0.15);
+    padding-top: 12px; display: none;
+  }
+  .cart-lines.open { display: block; }
+
+  .cart-line {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 12px; letter-spacing: 0.04em; padding: 5px 0;
+    color: rgba(249,246,240,0.85); font-weight: 300;
+  }
+  .cart-line .ln-name { font-weight: 700; }
+  .cart-line .ln-config { color: rgba(249,246,240,0.5); font-weight: 300; }
+  .cart-line .ln-remove { color: rgba(249,246,240,0.4); cursor: pointer; margin-left: 12px; font-weight: 700; }
+  .cart-line .ln-remove:hover { color: #b8860b; }
+
+  .cart-empty {
+    font-size: 11px; letter-spacing: 0.08em; color: rgba(249,246,240,0.4);
+    font-weight: 300; text-align: center; padding: 6px 0;
+  }
+
+  /* Receipt modal */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(26,26,26,0.55); z-index: 100;
+    display: none; align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-backdrop.open { display: flex; }
+
+  .receipt {
+    background: #f9f6f0; max-width: 420px; width: 100%;
+    padding: 40px 36px 32px; max-height: 86vh; overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .receipt-head { text-align: center; border-bottom: 0.5px solid rgba(26,26,26,0.15); padding-bottom: 18px; margin-bottom: 18px; }
+  .receipt-head .venue { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(26,26,26,0.45); margin-bottom: 8px; }
+  .receipt-head h2 { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 700; }
+  .receipt-head .order-id { font-size: 10px; letter-spacing: 0.12em; color: rgba(26,26,26,0.4); margin-top: 6px; }
+
+  .receipt-line { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0; border-bottom: 0.5px dashed rgba(26,26,26,0.12); gap: 12px; }
+  .receipt-line .r-name { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 700; }
+  .receipt-line .r-config { font-size: 10.5px; letter-spacing: 0.05em; color: rgba(26,26,26,0.5); font-weight: 300; margin-top: 2px; }
+  .receipt-line .r-price { font-size: 13px; font-weight: 700; white-space: nowrap; }
+
+  .receipt-totals { margin-top: 16px; padding-top: 12px; }
+  .receipt-totals .t-row { display: flex; justify-content: space-between; font-size: 12px; letter-spacing: 0.06em; color: rgba(26,26,26,0.6); padding: 4px 0; font-weight: 300; }
+  .receipt-totals .t-row.grand { border-top: 0.5px solid rgba(26,26,26,0.2); margin-top: 8px; padding-top: 12px; font-size: 15px; font-weight: 700; color: #1a1a1a; }
+  .receipt-totals .t-row.grand .t-val { font-family: 'Cormorant Garamond', serif; font-size: 22px; }
+
+  .receipt-foot { margin-top: 24px; text-align: center; }
+  .receipt-status { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #b8860b; font-weight: 700; margin-bottom: 18px; }
+  .receipt-close { font-family: 'Josefin Sans', sans-serif; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; padding: 11px 28px; border: 0.5px solid #1a1a1a; background: #1a1a1a; color: #f9f6f0; cursor: pointer; }
+  .receipt-close:hover { background: #333; }
+
+  /* History view */
+  .hist-view { display: none; }
+  .hist-view.active { display: block; }
+  .menu-view.hidden { display: none; }
+
+  .hist-intro {
+    font-size: 12.5px; letter-spacing: 0.05em; color: rgba(26,26,26,0.55);
+    line-height: 1.6; font-weight: 300; margin-bottom: 22px;
+  }
+
+  .hist-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 26px; flex-wrap: wrap; }
+  .hist-status { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(26,26,26,0.4); font-weight: 700; }
+  .hist-status .live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #b8860b; margin-right: 7px; vertical-align: middle; }
+  .hist-actions { display: flex; gap: 8px; }
+
+  .stat-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: rgba(26,26,26,0.12); border: 0.5px solid rgba(26,26,26,0.12); margin-bottom: 32px;
+  }
+  .stat-cell { background: #f9f6f0; padding: 20px 18px; }
+  .stat-cell .s-val { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 700; line-height: 1; color: #1a1a1a; }
+  .stat-cell .s-val.gold { color: #b8860b; }
+  .stat-cell .s-label { font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26,26,26,0.45); font-weight: 700; margin-top: 10px; }
+
+  .hist-section-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #b8860b; font-weight: 700; margin-bottom: 16px; margin-top: 8px; }
+
+  /* Popularity bars */
+  .bar-row { display: grid; grid-template-columns: 150px 1fr 70px; align-items: center; gap: 14px; padding: 7px 0; }
+  .bar-name { font-size: 12px; font-weight: 700; letter-spacing: 0.03em; color: #1a1a1a; }
+  .bar-track { height: 14px; background: rgba(26,26,26,0.06); position: relative; overflow: hidden; }
+  .bar-fill { height: 100%; background: #b8860b; transition: width 0.5s ease; }
+  .bar-val { font-size: 11px; letter-spacing: 0.04em; color: rgba(26,26,26,0.55); text-align: right; font-weight: 300; }
+  .bar-val strong { font-weight: 700; color: #1a1a1a; }
+
+  /* Order log */
+  .log-list { margin-top: 6px; }
+  .log-order {
+    border-top: 0.5px solid rgba(26,26,26,0.1);
+    padding: 16px 0 15px;
+  }
+  .log-order:last-child { border-bottom: 0.5px solid rgba(26,26,26,0.1); }
+  .log-order-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+  .log-order-id { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: #1a1a1a; }
+  .log-order-id .alc-tag {
+    display: inline-block; font-size: 8.5px; letter-spacing: 0.1em; text-transform: uppercase;
+    font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 8px;
+    background: rgba(184,134,11,0.12); color: #b8860b;
+  }
+  .log-order-id .alc-tag.na { background: rgba(26,26,26,0.07); color: rgba(26,26,26,0.55); }
+  .log-order-time { font-size: 10px; letter-spacing: 0.06em; color: rgba(26,26,26,0.4); font-weight: 300; white-space: nowrap; }
+  .log-order-total { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; color: #1a1a1a; white-space: nowrap; }
+  .log-items { font-size: 11.5px; letter-spacing: 0.04em; color: rgba(26,26,26,0.55); font-weight: 300; line-height: 1.6; }
+  .log-items .li-config { color: rgba(26,26,26,0.4); }
+
+  .hist-placeholder { text-align: center; padding: 48px 0; font-size: 12px; letter-spacing: 0.08em; color: rgba(26,26,26,0.35); font-weight: 300; }
+
+  .footer { margin-top: 52px; border-top: 0.5px solid rgba(26,26,26,0.12); padding-top: 24px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .footer-note { font-size: 10.5px; color: rgba(26,26,26,0.35); letter-spacing: 0.08em; line-height: 1.7; max-width: 380px; font-weight: 300; }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: rgba(26,26,26,0.2); letter-spacing: 0.04em; text-align: right; }
+
+  @media (max-width: 560px) {
+    .page { padding: 40px 22px 240px; }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .bar-row { grid-template-columns: 100px 1fr 56px; gap: 8px; }
+    .order-bar-inner { padding: 14px 22px; }
+    .order-bar-top { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header">
+    <p class="venue">De Tafel Bar &nbsp;·&nbsp; Amsterdam</p>
+    <h1>Drinks</h1>
+    <p class="tagline">All drinks start as crafted &nbsp;·&nbsp; add alcohol to yours</p>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="view-tabs">
+    <button class="view-tab active" data-view="menu" onclick="switchView('menu')">Order</button>
+    <button class="view-tab" data-view="hist" onclick="switchView('hist')">Order history<span class="tab-count" id="tabCount"></span></button>
+  </div>
+
+  <!-- ============ MENU / ORDER VIEW ============ -->
+  <div class="menu-view" id="menuView"></div>
+
+  <!-- ============ HISTORY VIEW ============ -->
+  <div class="hist-view" id="histView">
+    <p class="hist-intro">
+      Every finalized order is recorded here and shared across everyone using this menu.
+      The log shows each order newest first; the stats above summarize the full history.
+    </p>
+
+    <div class="hist-toolbar">
+      <span class="hist-status" id="histStatus"><span class="live-dot"></span>Loading…</span>
+      <div class="hist-actions">
+        <button class="ghost-btn" style="border-color:rgba(26,26,26,0.3);color:rgba(26,26,26,0.7);" onclick="loadHistory()">Refresh</button>
+        <button class="ghost-btn" style="border-color:rgba(26,26,26,0.3);color:rgba(26,26,26,0.7);" onclick="clearHistory()">Manage in Sheet</button>
+      </div>
+    </div>
+
+    <div id="histStats"></div>
+    <div id="histLog"></div>
+  </div>
+
+  <div class="footer">
+    <p class="footer-note">
+      All drinks are crafted alcohol-free by default.<br>
+      Alcohol is an optional add-on — always your choice.<br>
+      Please drink responsibly. Under 18? No alcohol add-ons available.
+    </p>
+    <p class="footer-logo">De Tafel Bar</p>
+  </div>
+
+</div>
+
+<!-- ============ ORDER BAR ============ -->
+<div class="order-bar" id="orderBar">
+  <div class="order-bar-inner">
+    <div class="order-bar-top">
+      <div>
+        <div class="order-bar-meta" id="orderMeta">0 items</div>
+        <div class="order-bar-total" id="orderTotal">€0.00</div>
+      </div>
+      <div class="order-bar-actions">
+        <button class="ghost-btn" id="toggleCartBtn" onclick="toggleCart()" disabled>View items</button>
+        <button class="ghost-btn" id="clearBtn" onclick="clearCart()" disabled>Clear</button>
+        <button class="finalize-btn" id="finalizeBtn" onclick="finalizeOrder()" disabled>Finalize order</button>
+      </div>
+    </div>
+    <div class="cart-lines" id="cartLines"></div>
+  </div>
+</div>
+
+<!-- ============ RECEIPT MODAL ============ -->
+<div class="modal-backdrop" id="receiptModal">
+  <div class="receipt" id="receiptBody"></div>
+</div>
+
+<script>
+// ---------- Menu data ----------
+const MENU = [
+  { cat: "Botanical Blends", drinks: [
+    { id:"garden_tonic", name:"Garden Tonic", base:6.50, desc:"Cucumber · Elderflower · Fresh Mint · Tonic",
+      na:[{name:"Seedlip Spice 94",add:2.50},{name:"Lyre's Dry London",add:2.50}],
+      alc:[{name:"Hendrick's Gin",add:3.50},{name:"Tanqueray Gin",add:3.00}] },
+    { id:"citrus_burst", name:"Citrus Burst", base:6.00, desc:"Yuzu · Lemon Thyme · Ginger · Sparkling Water",
+      na:[{name:"Seedlip Grove 42",add:2.50},{name:"Lyre's Italian Orange",add:2.50}],
+      alc:[{name:"Ketel One Vodka",add:3.00},{name:"Aperol",add:2.50}] },
+  ]},
+  { cat: "Roasted & Rich", drinks: [
+    { id:"dark_velvet", name:"Dark Velvet", base:6.50, desc:"Cold Brew · Vanilla · Toasted Coconut · Oat Milk",
+      na:[{name:"Lyre's Coffee Liqueur",add:2.50},{name:"Lyre's Irish Cream",add:2.50}],
+      alc:[{name:"Kahlúa",add:3.50},{name:"Baileys",add:3.00}] },
+    { id:"smoke_spice", name:"Smoke & Spice", base:7.00, desc:"Smoked Rosemary · Chilli · Black Pepper · Apple Juice",
+      na:[{name:"Lyre's American Malt",add:2.50},{name:"Seedlip Spice 94",add:2.50}],
+      alc:[{name:"Mezcal",add:4.50},{name:"Bourbon",add:3.50}] },
+  ]},
+  { cat: "Fizz & Fruit", drinks: [
+    { id:"passionfruit_soda", name:"Passionfruit Soda", base:5.50, desc:"Passionfruit · Lime · Basil · Prosecco-Style Soda",
+      na:[{name:"Lyre's Classico",add:2.50},{name:"Noughty Sparkling",add:3.00}],
+      alc:[{name:"Champagne Upgrade",add:4.00},{name:"White Rum",add:3.00}] },
+    { id:"berry_smash", name:"Berry Smash", base:6.00, desc:"Mixed Berries · Hibiscus · Lemon · Ginger Beer",
+      na:[{name:"Lyre's Dry London",add:2.50},{name:"Seedlip Grove 42",add:2.50}],
+      alc:[{name:"Gin",add:3.00},{name:"Prosecco Upgrade",add:3.50}] },
+  ]},
+  { cat: "Classics", drinks: [
+    { id:"spritz", name:"Spritz", base:6.00, desc:"Bitter Orange · Blood Orange · Rhubarb · Prosecco-Style Soda",
+      na:[{name:"Mesamis Aperol",add:2.50},{name:"Lyre's Aperitif Rosso",add:2.50}],
+      alc:[{name:"Aperol",add:3.00},{name:"Campari",add:3.00}] },
+  ]},
+];
+
+const DRINK_BY_ID = {};
+MENU.forEach(c => c.drinks.forEach(d => DRINK_BY_ID[d.id] = d));
+const ALL_DRINKS = MENU.flatMap(c => c.drinks);
+const euro = n => "€" + n.toFixed(2);
+
+// ---------- Per-card selection state ----------
+const selection = {};
+MENU.forEach(c => c.drinks.forEach(d => {
+  selection[d.id] = { type:"na", addonName:null, addonAdd:0, qty:1 };
+}));
+
+function cardUnitPrice(id){ const d=DRINK_BY_ID[id], s=selection[id]; return d.base + s.addonAdd; }
+function cardConfigLabel(id){ const s=selection[id]; return s.type==="na" ? "Crafted, no spirit" : s.addonName; }
+
+// ---------- Render menu ----------
+function renderMenu(){
+  const host = document.getElementById("menuView");
+  let html = "";
+  MENU.forEach(cat => {
+    html += `<p class="category-label">${cat.cat}</p>`;
+    cat.drinks.forEach(d => {
+      const s = selection[d.id];
+      const naPills = d.na.map(a =>
+        `<span class="addon-pill na ${s.type==='na_spirit'&&s.addonName===a.name?'selected':''}"
+           onclick="selectAddon('${d.id}','na_spirit','${a.name.replace(/'/g,"\\'")}',${a.add})">
+           ${a.name}<span class="addon-price">+${euro(a.add)} · ${euro(d.base+a.add)}</span></span>`).join("");
+      const alcPills = d.alc.map(a =>
+        `<span class="addon-pill ${s.type==='alc'&&s.addonName===a.name?'selected':''}"
+           onclick="selectAddon('${d.id}','alc','${a.name.replace(/'/g,"\\'")}',${a.add})">
+           ${a.name}<span class="addon-price">+${euro(a.add)} · ${euro(d.base+a.add)}</span></span>`).join("");
+      html += `
+      <div class="drink-card" id="card_${d.id}">
+        <div class="drink-header">
+          <span class="drink-name">${d.name}</span>
+          <span class="drink-base-price">${euro(d.base)}</span>
+        </div>
+        <p class="drink-desc">${d.desc}</p>
+        <div class="addons-row">
+          <p class="addons-label">Base · crafted (no spirit)</p>
+          <div class="addons-list">
+            <span class="addon-pill na ${s.type==='na'?'selected':''}"
+              onclick="selectAddon('${d.id}','na',null,0)">Crafted only<span class="addon-price">${euro(d.base)}</span></span>
+          </div>
+        </div>
+        <div class="addons-row">
+          <p class="addons-label">Add NA spirit</p>
+          <div class="addons-list">${naPills}</div>
+        </div>
+        <div class="addons-row">
+          <p class="addons-label">Add alcohol</p>
+          <div class="addons-list">${alcPills}</div>
+        </div>
+        <div class="card-action">
+          <span class="config-summary"><strong>${cardConfigLabel(d.id)}</strong> &nbsp;·&nbsp; ${euro(cardUnitPrice(d.id))} each</span>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div class="qty-control">
+              <button class="qty-btn" onclick="changeQty('${d.id}',-1)">–</button>
+              <span class="qty-num" id="qty_${d.id}">${s.qty}</span>
+              <button class="qty-btn" onclick="changeQty('${d.id}',1)">+</button>
+            </div>
+            <button class="add-btn" onclick="addToOrder('${d.id}')">Add to order</button>
+          </div>
+        </div>
+      </div>`;
+    });
+  });
+  host.innerHTML = html;
+}
+
+function selectAddon(id, type, name, add){
+  selection[id].type = type; selection[id].addonName = name; selection[id].addonAdd = add;
+  renderMenu();
+}
+function changeQty(id, delta){
+  selection[id].qty = Math.max(1, selection[id].qty + delta);
+  document.getElementById("qty_"+id).textContent = selection[id].qty;
+}
+
+// ---------- Cart ----------
+let cart = [];
+function addToOrder(id){
+  const d = DRINK_BY_ID[id], s = selection[id];
+  cart.push({ drinkId:id, name:d.name, configLabel:cardConfigLabel(id), unitPrice:cardUnitPrice(id), qty:s.qty, isAlcohol:s.type==="alc" });
+  selection[id] = { type:"na", addonName:null, addonAdd:0, qty:1 };
+  renderMenu(); renderCart();
+}
+function removeLine(idx){ cart.splice(idx,1); renderCart(); }
+function clearCart(){ cart = []; renderCart(); document.getElementById("cartLines").classList.remove("open"); }
+
+function cartTotals(){
+  let items=0, total=0, alc=0;
+  cart.forEach(l => { items += l.qty; total += l.unitPrice*l.qty; if(l.isAlcohol) alc += l.qty; });
+  return {items, total, alc};
+}
+function renderCart(){
+  const t = cartTotals();
+  document.getElementById("orderMeta").textContent =
+    t.items===0 ? "0 items" : `${t.items} item${t.items>1?'s':''}${t.alc?` · ${t.alc} with alcohol`:''}`;
+  document.getElementById("orderTotal").textContent = euro(t.total);
+  const has = cart.length > 0;
+  ["toggleCartBtn","clearBtn","finalizeBtn"].forEach(b => document.getElementById(b).disabled = !has);
+  const lines = document.getElementById("cartLines");
+  if(cart.length===0){ lines.innerHTML = `<div class="cart-empty">No items yet. Configure a drink and add it.</div>`; return; }
+  lines.innerHTML = cart.map((l,i) => `
+    <div class="cart-line">
+      <span><span class="ln-name">${l.qty}× ${l.name}</span> &nbsp;<span class="ln-config">${l.configLabel}</span></span>
+      <span>${euro(l.unitPrice*l.qty)}<span class="ln-remove" onclick="removeLine(${i})">✕</span></span>
+    </div>`).join("");
+}
+function toggleCart(){ document.getElementById("cartLines").classList.toggle("open"); }
+
+// ---------- Shared order history (Google Sheet via Apps Script) ----------
+// PASTE YOUR DEPLOYED WEB APP URL BELOW (ends in /exec). See AppsScript_Backend.gs.
+const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycby5wMn4Aqu5oI4HdA7CF27Q4XjhHO-A-8cawBEA6wwF89UNWXfwIJXga4cpxn-rWT4tHQ/exec";
+
+const ENDPOINT_OK = /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(ENDPOINT_URL);
+let HISTORY = [];   // [{id, ts, lines:[{name,configLabel,unitPrice,qty,isAlcohol}], items, alc, total}]
+let LAST_ERROR = null;
+
+async function readHistory(){
+  if(!ENDPOINT_OK) return HISTORY; // not configured: keep whatever is in memory this session
+  try {
+    const res = await fetch(ENDPOINT_URL, { method:"GET" });
+    const data = await res.json();
+    LAST_ERROR = data.ok ? null : (data.error || "read error");
+    return Array.isArray(data.orders) ? data.orders : [];
+  } catch(e){ LAST_ERROR = String(e); return HISTORY; }
+}
+
+// Append one order. text/plain body avoids a CORS preflight Apps Script can't answer.
+async function appendOrder(order){
+  HISTORY.push(order); // optimistic local update so it shows immediately
+  if(!ENDPOINT_OK) return;
+  try {
+    await fetch(ENDPOINT_URL, {
+      method:"POST",
+      headers:{ "Content-Type":"text/plain;charset=utf-8" },
+      body: JSON.stringify(order)
+    });
+    LAST_ERROR = null;
+  } catch(e){ LAST_ERROR = String(e); }
+}
+
+async function loadHistory(){
+  const status = document.getElementById("histStatus");
+  status.innerHTML = `<span class="live-dot"></span>Loading…`;
+  HISTORY = await readHistory();
+  renderHistory();
+}
+
+function renderHistory(){
+  const tabCount = document.getElementById("tabCount");
+  tabCount.textContent = HISTORY.length ? `(${HISTORY.length})` : "";
+
+  const status = document.getElementById("histStatus");
+  if(!ENDPOINT_OK){
+    status.innerHTML = `<span class="live-dot" style="background:rgba(26,26,26,0.3)"></span>Not connected · add your endpoint URL · session only`;
+  } else if(LAST_ERROR){
+    status.innerHTML = `<span class="live-dot" style="background:#b8860b"></span>Connected · last sync had an issue`;
+  } else {
+    status.innerHTML = `<span class="live-dot"></span>Shared log · ${HISTORY.length} order${HISTORY.length!==1?'s':''}`;
+  }
+
+  const statsHost = document.getElementById("histStats");
+  const logHost = document.getElementById("histLog");
+
+  if(HISTORY.length === 0){
+    statsHost.innerHTML = "";
+    logHost.innerHTML = `<div class="hist-placeholder">No orders yet. Finalize an order on the Order tab and it will appear here.</div>`;
+    return;
+  }
+
+  // Aggregates
+  let gross=0, totalItems=0, alcItems=0, ordersWithAlc=0;
+  const drinkCount = {}; ALL_DRINKS.forEach(d => drinkCount[d.id]=0);
+  // map names back to ids for counting
+  const idByName = {}; ALL_DRINKS.forEach(d => idByName[d.name]=d.id);
+
+  HISTORY.forEach(o => {
+    gross += o.total;
+    let hasAlc=false;
+    o.lines.forEach(l => {
+      totalItems += l.qty;
+      if(l.isAlcohol){ alcItems += l.qty; hasAlc=true; }
+      const id = idByName[l.name];
+      if(id!=null) drinkCount[id] += l.qty;
+    });
+    if(hasAlc) ordersWithAlc++;
+  });
+
+  const avgOrder = gross / HISTORY.length;
+  const avgItems = totalItems / HISTORY.length;
+  const alcAttach = totalItems ? (alcItems/totalItems*100) : 0;
+  const ordersAlcPct = (ordersWithAlc/HISTORY.length*100);
+
+  statsHost.innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-cell"><div class="s-val gold">${euro(gross)}</div><div class="s-label">Total revenue</div></div>
+      <div class="stat-cell"><div class="s-val">${euro(avgOrder)}</div><div class="s-label">Avg order value</div></div>
+      <div class="stat-cell"><div class="s-val">${HISTORY.length}</div><div class="s-label">Orders placed</div></div>
+      <div class="stat-cell"><div class="s-val">${avgItems.toFixed(2)}</div><div class="s-label">Avg drinks / order</div></div>
+      <div class="stat-cell"><div class="s-val gold">${alcAttach.toFixed(1)}%</div><div class="s-label">Alcohol attach (drinks)</div></div>
+      <div class="stat-cell"><div class="s-val">${ordersAlcPct.toFixed(1)}%</div><div class="s-label">Orders with alcohol</div></div>
+    </div>`;
+
+  // Popularity
+  const pop = ALL_DRINKS.map(d => ({name:d.name, n:drinkCount[d.id]})).sort((a,b)=>b.n-a.n);
+  const maxN = Math.max(...pop.map(p=>p.n), 1);
+  let popHtml = `<p class="hist-section-label">Drink popularity · ${totalItems} drinks ordered</p>`;
+  pop.forEach(p => {
+    popHtml += `
+      <div class="bar-row">
+        <span class="bar-name">${p.name}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${(p.n/maxN*100).toFixed(1)}%"></div></div>
+        <span class="bar-val"><strong>${p.n}</strong> · ${totalItems?(p.n/totalItems*100).toFixed(1):0}%</span>
+      </div>`;
+  });
+
+  // Log, newest first
+  let logHtml = `<p class="hist-section-label" style="margin-top:34px;">Order log · newest first</p><div class="log-list">`;
+  const ordered = HISTORY.slice().sort((a,b)=> b.ts - a.ts);
+  ordered.forEach(o => {
+    const hasAlc = o.lines.some(l => l.isAlcohol);
+    const time = new Date(o.ts).toLocaleString('en-GB', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'});
+    const itemsStr = o.lines.map(l =>
+      `${l.qty}× ${l.name} <span class="li-config">(${l.configLabel})</span>`).join(" &nbsp;·&nbsp; ");
+    logHtml += `
+      <div class="log-order">
+        <div class="log-order-head">
+          <span class="log-order-id">${o.id}<span class="alc-tag ${hasAlc?'':'na'}">${hasAlc?'Alcohol':'NA'}</span>
+            <span class="log-order-time" style="margin-left:10px;">${time}</span></span>
+          <span class="log-order-total">${euro(o.total)}</span>
+        </div>
+        <div class="log-items">${itemsStr}</div>
+      </div>`;
+  });
+  logHtml += `</div>`;
+
+  logHost.innerHTML = popHtml + logHtml;
+}
+
+async function clearHistory(){
+  if(!ENDPOINT_OK){
+    if(!confirm("Clear the on-screen list for this session?")) return;
+    HISTORY = [];
+    renderHistory();
+    return;
+  }
+  alert("Orders are stored in your Google Sheet. To delete them, open the Sheet and remove the rows.\n\nThis avoids exposing a public 'delete everything' button that anyone with the link could trigger. Use Refresh here to reload the current data.");
+}
+
+// ---------- Finalize ----------
+async function finalizeOrder(){
+  const t = cartTotals();
+  const orderId = "DTB-" + Math.random().toString(36).slice(2,7).toUpperCase();
+  const ts = Date.now();
+
+  const order = {
+    id: orderId, ts,
+    lines: cart.map(l => ({ name:l.name, configLabel:l.configLabel, unitPrice:l.unitPrice, qty:l.qty, isAlcohol:l.isAlcohol })),
+    items: t.items, alc: t.alc, total: t.total
+  };
+  await appendOrder(order);
+  renderHistory();
+  // reconcile with the canonical server copy shortly after (write may lag)
+  if(ENDPOINT_OK){ setTimeout(loadHistory, 1500); }
+
+  const time = new Date(ts).toLocaleString('en-GB', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'});
+  let html = `
+    <div class="receipt-head">
+      <p class="venue">De Tafel Bar · Amsterdam</p>
+      <h2>Order placed</h2>
+      <p class="order-id">${orderId} &nbsp;·&nbsp; ${time}</p>
+    </div>`;
+  cart.forEach(l => {
+    html += `
+      <div class="receipt-line">
+        <span><span class="r-name">${l.qty}× ${l.name}</span>
+          <div class="r-config">${l.configLabel} · ${euro(l.unitPrice)} each</div></span>
+        <span class="r-price">${euro(l.unitPrice*l.qty)}</span>
+      </div>`;
+  });
+  html += `
+    <div class="receipt-totals">
+      <div class="t-row"><span>Items</span><span class="t-val">${t.items}</span></div>
+      <div class="t-row"><span>With alcohol</span><span class="t-val">${t.alc}</span></div>
+      <div class="t-row grand"><span>Total</span><span class="t-val">${euro(t.total)}</span></div>
+    </div>
+    <div class="receipt-foot">
+      <p class="receipt-status">Confirmed · added to order history</p>
+      <button class="receipt-close" onclick="closeReceipt()">Close</button>
+    </div>`;
+  document.getElementById("receiptBody").innerHTML = html;
+  document.getElementById("receiptModal").classList.add("open");
+}
+function closeReceipt(){
+  document.getElementById("receiptModal").classList.remove("open");
+  clearCart();
+}
+document.getElementById("receiptModal").addEventListener("click", e => {
+  if(e.target.id === "receiptModal") closeReceipt();
+});
+
+// ---------- View switch ----------
+function switchView(v){
+  document.querySelectorAll(".view-tab").forEach(t => t.classList.toggle("active", t.dataset.view===v));
+  document.getElementById("menuView").classList.toggle("hidden", v!=="menu");
+  document.getElementById("histView").classList.toggle("active", v==="hist");
+  document.getElementById("orderBar").style.display = v==="menu" ? "block" : "none";
+  if(v==="hist") loadHistory();
+}
+
+// ---------- Init ----------
+renderMenu();
+renderCart();
+loadHistory();
+</script>
+
+</body>
+</html>
